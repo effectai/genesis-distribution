@@ -34,7 +34,7 @@ const action = (to: string, amount: any) => {
         data: {
             from: fromAccount,
             to: to,
-            quantity: `${parseInt(amount).toFixed(4)} ${tokenSymbol}`,
+            quantity: `${parseFloat(amount).toFixed(4)} ${tokenSymbol}`,
             memo: memo,
         }
     }
@@ -52,21 +52,27 @@ const chunk = (arr: any[], size: number) =>
 const run = async () => {
     const participants: Participant[] = await csvParticipants()
     const actions = participants.map((participant) => action(participant.account, participant.amount))
+    const chunks = chunk(actions, 4)
 
     const signatureProvider = new JsSignatureProvider([privateKey])
     const rpc = new JsonRpc(eosNode, {fetch})
     const api = new Api({rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder()})
 
-    try {
-        const result = await api.transact({actions: actions}, {
-            blocksBehind: 3,
-            expireSeconds: 30,
-        })
-        console.dir(result)
-    } catch (e) {
-        console.log('\nCaught exception: ' + e)
-        if (e instanceof RpcError) {
-            console.log(JSON.stringify(e.json, null, 2))
+    for (let i = 0; i < chunks.length; i++) {
+        const elm = chunks[i]
+        await delay(2000)
+        try {
+            const result = await api.transact({actions: elm}, {
+                blocksBehind: 3,
+                expireSeconds: 30,
+            })
+            console.dir(result)
+        } catch (e) {
+            console.log('\nCaught exception: ' + e)
+            console.log('While sneing', elm)
+            if (e instanceof RpcError) {
+                console.log(JSON.stringify(e.json, null, 2))
+            }
         }
     }
 }
