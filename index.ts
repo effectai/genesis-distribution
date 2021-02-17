@@ -4,12 +4,12 @@ import csvParse from 'csv-parse'
 import getStream from 'get-stream'
 import {JsSignatureProvider} from 'eosjs/dist/eosjs-jssig'
 
-const snapshotFile = 'snapshot.csv'
 const privateKey = ''
 const fromAccount = ''
 const eosNode = 'https://eos.greymass.com/'
 const tokenContract = 'effecttokens'
-const memo = 'EFX Genesis Airdrop'
+const snapshotFile = 'distribution_test.csv'
+const memo = 'fee distribution'
 
 interface Participant {
     account: string
@@ -38,6 +38,15 @@ const action = (to: string, amount: number) => {
         }
     }
 }
+
+function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
+const chunk = (arr: any[], size: number) =>
+  Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+    arr.slice(i * size, i * size + size)
+  );
 
 const run = async () => {
     const participants: Participant[] = await csvParticipants()
