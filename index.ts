@@ -1,15 +1,17 @@
 import fs from 'fs'
 import {Api, JsonRpc, RpcError} from 'eosjs'
 import csvParse from 'csv-parse'
+import fetch from 'node-fetch'
 import getStream from 'get-stream'
 import {JsSignatureProvider} from 'eosjs/dist/eosjs-jssig'
 
 const snapshotFile = 'snapshot.csv'
-const privateKey = ''
-const fromAccount = ''
+const privateKey = 'PVT_K1_zE55YBmkfWADCVC3rcrj9oTX4PrM95BYFTMepqNR3YePW18hs'
+const fromAccount = 'airdroptestr'
 const eosNode = 'https://eos.greymass.com/'
 const tokenContract = 'effecttokens'
 const memo = 'EFX Genesis Airdrop'
+const tokenSymbol = 'EFX'
 
 interface Participant {
     account: string
@@ -22,7 +24,7 @@ const csvParticipants = async (): Promise<Participant[]> => {
     return csvData.map((line: any) => ({account: line[0], amount: line[1]} as Participant))
 }
 
-const action = (to: string, amount: number) => {
+const action = (to: string, amount: any) => {
     return {
         account: tokenContract,
         name: 'transfer',
@@ -33,7 +35,7 @@ const action = (to: string, amount: number) => {
         data: {
             from: fromAccount,
             to: to,
-            quantity: amount,
+            quantity: `${parseInt(amount).toFixed(4)} ${tokenSymbol}`,
             memo: memo,
         }
     }
@@ -48,7 +50,10 @@ const run = async () => {
     const api = new Api({rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder()})
 
     try {
-        const result = await api.transact({actions: actions})
+        const result = await api.transact({actions: actions}, {
+            blocksBehind: 3,
+            expireSeconds: 30,
+        })
         console.dir(result)
     } catch (e) {
         console.log('\nCaught exception: ' + e)
