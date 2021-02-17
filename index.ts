@@ -9,8 +9,9 @@ const privateKey = ''
 const fromAccount = ''
 const eosNode = 'https://eos.greymass.com/'
 const tokenContract = 'effecttokens'
-const snapshotFile = 'distribution_test.csv'
-const memo = 'fee distribution'
+const snapshotFile = ''
+const memo = 'Effect Network Fee Distribution'
+const tokenSymbol = 'EFX'
 
 interface Participant {
     account: string
