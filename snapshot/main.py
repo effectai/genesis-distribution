@@ -126,11 +126,17 @@ if __name__ == '__main__':
     num_members = len(members)
     print('Found {} DAO members'.format(num_members))
 
-    for i, member in enumerate(members[:5]):
-        members[i] = {**member, 'dao_rank': calculate_dao_rank(member['account'])}
+    for i, member in enumerate(members):
+        efx_staked, nfx_staked, last_claim_age, last_claim_time = get_staking_details(member['account'])
+        power = calculate_power(efx_staked, last_claim_age, last_claim_time)
+        members[i] = {**member,
+                      'dao_rank': calculate_dao_rank(member['account']),
+                      'efx_staked': efx_staked,
+                      'nfx_staked': nfx_staked,
+                      'power': power}
 
     if members:
         with open('airdrop.csv', 'w', newline='') as output:
             output = csv.DictWriter(output, fieldnames=members[0].keys())
-            # output.writeheader()
+            output.writeheader()
             output.writerows(members)

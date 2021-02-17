@@ -1,4 +1,8 @@
 .idea/
 node_modules/
 *.csv
+<<<<<<< HEAD
 *.log
+=======
+snapshot/venv/
+>>>>>>> 704923e276903c74438c65a5b1bf350119d43a7d
