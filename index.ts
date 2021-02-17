@@ -70,7 +70,7 @@ const run = async () => {
             console.dir(result)
         } catch (e) {
             console.log('\nCaught exception: ' + e)
-            console.log('While sneing', elm)
+            console.log('While sending', elm)
             if (e instanceof RpcError) {
                 console.log(JSON.stringify(e.json, null, 2))
             }
