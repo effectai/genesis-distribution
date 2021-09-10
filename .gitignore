@@ -4,3 +4,7 @@ node_modules/
 *.log
 snapshot/venv/
 !snapshot_158485783.csv
+!q1_q2_airdrop.csv
+!cycle_dates.csv
+!q1_q2_voteweight_cycle13.csv
+!force_payout_per_cycle.csv
